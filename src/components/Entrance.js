@@ -34,8 +34,7 @@ function Entrance({ title, formName, buttonName, onSubmit }) {
                         minLength='2'
                         maxLength='30'
                         id="email-input"
-                        onChange={(e) => handleChange(e)}
-                    />
+                        onChange={(e) => handleChange(e)}/>
                     <span className="popup__input-error place-input-error"></span>
 
                     <input type="password"
@@ -46,8 +45,7 @@ function Entrance({ title, formName, buttonName, onSubmit }) {
                         minLength="2"
                         maxLength="200"
                         id="password-input"
-                        onChange={(e) => handleChange(e)}
-                    />
+                        onChange={(e) => handleChange(e)}/>
                     <span className="form__input-error form__about-input-error"></span>
 
                 </div>

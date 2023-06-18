@@ -221,11 +221,10 @@ function App() {
           path="/sign-up"
           element={
             <Register
-              onSubmit={handleRegister}
+            formName={"sign-up"}
               title={"Регистрация"}
-              formName={"sign-up"}
               buttonName={"Зарегистрироваться"}
-            />
+              onSubmit={handleRegister}/>
           }
         />
 
@@ -233,11 +232,10 @@ function App() {
           path="/sign-in"
           element={
             <Login
-              onSubmit={handleLogin}
-              title={"Вход"}
               formName={"sign-in"}
+              title={"Вход"}
               buttonName={"Войти"}
-            />
+              onSubmit={handleLogin}/>
           }
         />
       </Routes>
