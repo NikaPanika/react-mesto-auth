@@ -2,7 +2,7 @@ import React from "react";
 import Entrance from "./Entrance";
 import { Link } from "react-router-dom";
 
-function Register({ title, formName, buttonName, onSubmit }) {
+function Register({ title, formName, buttonName, onSubmit, isLoading }) {
 
     return (
         <>
@@ -11,6 +11,7 @@ function Register({ title, formName, buttonName, onSubmit }) {
                 formName={formName}
                 buttonName={buttonName}
                 onSubmit={onSubmit}
+                isLoading={isLoading}
             />
             <p className="entrance-container__subtitle">
                 Уже зарегистрированы?&ensp;<Link to="/sign-in" className="entrance-container__link" >Войти</Link>

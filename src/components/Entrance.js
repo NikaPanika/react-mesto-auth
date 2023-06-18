@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function Entrance({ title, formName, buttonName, onSubmit }) {
+function Entrance({ title, formName, buttonName, onSubmit, isLoading }) {
 
     const [loginData, setLoginData] = useState({
         email: "",
@@ -34,7 +34,8 @@ function Entrance({ title, formName, buttonName, onSubmit }) {
                         minLength='2'
                         maxLength='30'
                         id="email-input"
-                        onChange={(e) => handleChange(e)}/>
+                        onChange={(e) => handleChange(e)}
+                        value={loginData.email}/>
                     <span className="popup__input-error place-input-error"></span>
 
                     <input type="password"
@@ -45,7 +46,8 @@ function Entrance({ title, formName, buttonName, onSubmit }) {
                         minLength="2"
                         maxLength="200"
                         id="password-input"
-                        onChange={(e) => handleChange(e)}/>
+                        onChange={(e) => handleChange(e)}
+                        value={loginData.password}/>
                     <span className="form__input-error form__about-input-error"></span>
 
                 </div>
@@ -53,7 +55,7 @@ function Entrance({ title, formName, buttonName, onSubmit }) {
                     <button
                         className="popup__save-button popup__save-button_type_black"
                         type="submit"
-                    >{buttonName}</button>
+                    >{isLoading ? buttonName + "..." : buttonName}</button>
                 </div>
             </form>
         </div>

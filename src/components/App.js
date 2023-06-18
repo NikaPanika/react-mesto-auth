@@ -76,6 +76,22 @@ function App() {
     setIsLoginConfirmed(false);
   }
 
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isImagePopupOpen;
+
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if (evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    if (isOpen) { // навешиваем только при открытии
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      }
+    }
+  }, [isOpen])
+
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -91,7 +107,10 @@ function App() {
       });
   }
 
+  const [isLoading, setIsLoading] = useState(false);
+
   function handleCardDelete(card) {
+    setIsLoading(true);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api
       .deleteCard(card._id)
@@ -100,10 +119,13 @@ function App() {
           state.filter((c) => c._id !== card._id));
       }).catch((err) => {
         console.log(`Ошибка cards: ${err}`)
+      }).finally(() => {
+        setIsLoading(false);
       });
   }
 
   function handleUpdateUser(inputs) {
+    setIsLoading(true);
     api
       .setUserInfo(inputs) //сделать запрос к серверу на добавление
       .then((res) => {
@@ -111,9 +133,13 @@ function App() {
         closeAllPopups();
       })
       .catch(console.error)
+      .finally(() => {
+        setIsLoading(false);
+      })
   }
 
   function handleUpdateAvatar(link) {
+    setIsLoading(true);
     api
       .setAvatar(link)
       .then((res) => {
@@ -121,17 +147,24 @@ function App() {
         closeAllPopups();
 
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   function handleAddPlaceSubmit(data) {
+    setIsLoading(true);
     api
       .addCard(data)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   const navigate = useNavigate();
@@ -156,6 +189,7 @@ function App() {
   const [isLoginConfirmed, setIsLoginConfirmed] = useState(false);
 
   function handleLogin({ email, password }) {
+    setIsLoading(true);
     auth
       .login({ email, password })
       .then((res) => {
@@ -167,9 +201,13 @@ function App() {
       .catch((err) => {
         console.log(err);
       })
+      .finally(() => {
+        setIsLoading(false);
+      })
   }
 
   function handleRegister({ email, password }) {
+    setIsLoading(true);
     auth
       .register({ email, password })
       .then(() => {
@@ -184,6 +222,7 @@ function App() {
       })
       .finally(() => {
         setIsLoginConfirmed(true);
+        setIsLoading(false);
       });
   }
 
@@ -221,10 +260,11 @@ function App() {
           path="/sign-up"
           element={
             <Register
-            formName={"sign-up"}
+              formName={"sign-up"}
               title={"Регистрация"}
               buttonName={"Зарегистрироваться"}
-              onSubmit={handleRegister}/>
+              onSubmit={handleRegister}
+              isLoading={isLoading} />
           }
         />
 
@@ -235,7 +275,8 @@ function App() {
               formName={"sign-in"}
               title={"Вход"}
               buttonName={"Войти"}
-              onSubmit={handleLogin}/>
+              onSubmit={handleLogin}
+              isLoading={isLoading} />
           }
         />
       </Routes>
@@ -249,28 +290,22 @@ function App() {
       <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
-        onUpdateUser={handleUpdateUser} />
+        onUpdateUser={handleUpdateUser}
+        isLoading={isLoading} />
       <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
-        onAddPlace={handleAddPlaceSubmit} />
+        onAddPlace={handleAddPlaceSubmit}
+        isLoading={isLoading} />
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
-        onUpdateAvatar={handleUpdateAvatar} />
+        onUpdateAvatar={handleUpdateAvatar}
+        isLoading={isLoading} />
       <ImagePopup
         card={selectedCard}
         isOpen={isImagePopupOpen}
         onClose={closeAllPopups} />
-      <div className="popup popup-delete">
-        <div className="popup__container">
-          <form className="popup__form popup__form_popup-delete">
-            <button className="popup__close-button" type="button"></button>
-            <h2 className="popup__header popup-delete__header">Вы уверены?</h2>
-            <button className="popup__save-button popup-delete__save-button" type="submit">Да</button>
-          </form>
-        </div>
-      </div>
     </CurrentUserContext.Provider>
   );
 };
